@@ -53,31 +53,37 @@ public class SecurityConfig {
                 .and()
                 .formLogin()// browser requests
                 .and()
-                .httpBasic();// backend services
+                .httpBasic();// backend services .... basic auth
         return http.build();
     }
 
-//    @Bean
-//    protected UserDetailsService userDetailsService() {
-//        UserDetails student = User.builder()
-//                .username("sourav")
-//                //.passwordEncoder(s -> String.valueOf(NoOpPasswordEncoder.getInstance()))
-//                .password(passwordConfig.passwordEncoder().encode("123"))
-//                //.roles("STUDENT") // ROLE_STUDENT
-//                .roles(STUDENT.name())
-//                .build();
-//
-//        UserDetails admin = User.builder()
-//                .username("anna")
-//                //.passwordEncoder(s -> String.valueOf(NoOpPasswordEncoder.getInstance()))
-//                .password(passwordConfig.passwordEncoder().encode("123"))
-//                .roles("ADMIN") // ROLE_ADMIN
-//                .build();
-//        return new InMemoryUserDetailsManager(
-//                student,
-//                admin
-//        );
-//    }
+    @Bean
+    protected UserDetailsService userDetailsService() {
+        UserDetails student = User.builder()
+                .username("sourav")
+                //.passwordEncoder(s -> String.valueOf(NoOpPasswordEncoder.getInstance()))
+                .password(passwordConfig.passwordEncoder().encode("123"))
+                //.roles("STUDENT") // ROLE_STUDENT
+                .roles(STUDENT.name())
+                .build();
+
+        UserDetails admin = User.builder()
+                .username("anna")
+                //.passwordEncoder(s -> String.valueOf(NoOpPasswordEncoder.getInstance()))
+                .password(passwordConfig.passwordEncoder().encode("123"))
+                .roles("ADMIN") // ROLE_ADMIN
+                .build();
+
+        UserDetails adminTrainee = User.builder()
+                .username("tommy")
+                .password(passwordConfig.passwordEncoder().encode("123"))
+                .roles(ADMINTRAINEE.name()) // ROLE_ADMIN
+                .build();
+        return new InMemoryUserDetailsManager(
+                student,
+                admin
+        );
+    }
 
     @Bean
     public UserDetailsService userDetailsService(DataSource dataSource) {
