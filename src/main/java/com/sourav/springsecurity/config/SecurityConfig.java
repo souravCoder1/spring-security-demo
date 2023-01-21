@@ -1,12 +1,9 @@
 package com.sourav.springsecurity.config;
 
-import org.postgresql.ds.PGSimpleDataSource;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -27,27 +24,26 @@ import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.sourav.springsecurity.config.ApplicationUserPermission.*;
 import static com.sourav.springsecurity.config.ApplicationUserRole.*;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
     @Autowired
-    DataSource dataSource;
-    @Autowired
     PasswordConfig passwordConfig;
-    // Enable jdbc authentication
-    @Autowired
-    public void configAuthentication(AuthenticationManagerBuilder auth) throws Exception {
-        auth.jdbcAuthentication().dataSource(dataSource);
-    }
     @Bean
     protected SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         http.
-                authorizeRequests()
+                csrf().disable()
+                .authorizeRequests()
                 .antMatchers("/**").authenticated()
                 .antMatchers("/", "/index").permitAll()
                 .antMatchers("/api/**").hasRole(STUDENT.name()) // role based authentication
+                .antMatchers(HttpMethod.DELETE, "/management/api/**").hasAuthority(COURSE_WRITE.name())
+                .antMatchers(HttpMethod.PUT, "/management/api/**").hasAuthority(COURSE_WRITE .name())
+                .antMatchers(HttpMethod.POST, "/management/api/**").hasAuthority(COURSE_WRITE.name())
+                .antMatchers(HttpMethod.GET, "/management/api/**").hasAnyRole(ADMINTRAINEE.name(), ADMIN.name(), STUDENT.name())
                 .anyRequest()
                 .authenticated()
                 .and()
@@ -64,30 +60,34 @@ public class SecurityConfig {
                 //.passwordEncoder(s -> String.valueOf(NoOpPasswordEncoder.getInstance()))
                 .password(passwordConfig.passwordEncoder().encode("123"))
                 //.roles("STUDENT") // ROLE_STUDENT
-                .roles(STUDENT.name())
+                //.roles(STUDENT.name())
+                .authorities(STUDENT.getGrantedAuthority())
                 .build();
 
         UserDetails admin = User.builder()
                 .username("anna")
                 //.passwordEncoder(s -> String.valueOf(NoOpPasswordEncoder.getInstance()))
                 .password(passwordConfig.passwordEncoder().encode("123"))
-                .roles("ADMIN") // ROLE_ADMIN
+                //.roles("ADMIN") // ROLE_ADMIN
+                .authorities(ADMIN.getGrantedAuthority())
                 .build();
 
         UserDetails adminTrainee = User.builder()
                 .username("tommy")
                 .password(passwordConfig.passwordEncoder().encode("123"))
-                .roles(ADMINTRAINEE.name()) // ROLE_ADMIN
+                //.roles(ADMINTRAINEE.name()) // ROLE_ADMIN
+                .authorities(ADMINTRAINEE.getGrantedAuthority())
                 .build();
         return new InMemoryUserDetailsManager(
                 student,
-                admin
+                admin,
+                adminTrainee
         );
     }
 
-    @Bean
-    public UserDetailsService userDetailsService(DataSource dataSource) {
-        return new JdbcUserDetailsManager(dataSource);
-    }
+//    @Bean
+//    public UserDetailsService userDetailsService(DataSource dataSource) {
+//        return new JdbcUserDetailsManager(dataSource);
+//    }
 
 }
