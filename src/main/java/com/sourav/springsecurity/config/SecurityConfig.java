@@ -39,7 +39,7 @@ public class SecurityConfig {
                 .authorizeRequests()
                 .antMatchers("/**").authenticated()
                 .antMatchers("/", "/index").permitAll()
-                .antMatchers("/api/**").hasRole(STUDENT.name()) // role based authentication
+                .antMatchers("/api/**").hasRole(STUDENT.name()) // role based authentication // order of antMatchers in important
                 .antMatchers(HttpMethod.DELETE, "/management/api/**").hasAuthority(COURSE_WRITE.name())
                 .antMatchers(HttpMethod.PUT, "/management/api/**").hasAuthority(COURSE_WRITE .name())
                 .antMatchers(HttpMethod.POST, "/management/api/**").hasAuthority(COURSE_WRITE.name())
