@@ -3,47 +3,31 @@ package com.sourav.springsecurity.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
-import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-
-import javax.sql.DataSource;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.sourav.springsecurity.config.ApplicationUserPermission.*;
 import static com.sourav.springsecurity.config.ApplicationUserRole.*;
 
 @Configuration
-@EnableWebSecurity
 public class SecurityConfig {
     @Autowired
     PasswordConfig passwordConfig;
     @Bean
     protected SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
-        http.
-                csrf().disable()
+        http
+                //.csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/**").authenticated()
                 .antMatchers("/", "/index").permitAll()
                 .antMatchers("/api/**").hasRole(STUDENT.name()) // role based authentication // order of antMatchers in important
-                .antMatchers(HttpMethod.DELETE, "/management/api/**").hasAuthority(COURSE_WRITE.name())
-                .antMatchers(HttpMethod.PUT, "/management/api/**").hasAuthority(COURSE_WRITE .name())
-                .antMatchers(HttpMethod.POST, "/management/api/**").hasAuthority(COURSE_WRITE.name())
-                .antMatchers(HttpMethod.GET, "/management/api/**").hasAnyRole(ADMINTRAINEE.name(), ADMIN.name(), STUDENT.name())
+//                .antMatchers(HttpMethod.DELETE, "/management/api/**").hasAuthority(COURSE_WRITE.name())
+//                .antMatchers(HttpMethod.PUT, "/management/api/**").hasAuthority(COURSE_WRITE .name())
+//                .antMatchers(HttpMethod.POST, "/management/api/**").hasAuthority(COURSE_WRITE.name())
+//                .antMatchers(HttpMethod.GET, "/management/api/**").hasAnyRole(ADMINTRAINEE.name(), ADMIN.name(), STUDENT.name())
                 .anyRequest()
                 .authenticated()
                 .and()
@@ -85,9 +69,5 @@ public class SecurityConfig {
         );
     }
 
-//    @Bean
-//    public UserDetailsService userDetailsService(DataSource dataSource) {
-//        return new JdbcUserDetailsManager(dataSource);
-//    }
 
 }
