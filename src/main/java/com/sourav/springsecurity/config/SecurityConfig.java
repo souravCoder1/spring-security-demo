@@ -20,18 +20,18 @@ public class SecurityConfig {
     @Bean
     protected SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         http
-                .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                .and()
+                .csrf().disable() // else not able to login
                 .authorizeRequests()
-                .antMatchers("/**").authenticated()
-                .antMatchers("/", "/index").permitAll()
+                .antMatchers("/", "index", "/index", "/css/*", "/js/*").permitAll()
                 .antMatchers("/api/**").hasRole(STUDENT.name()) // role based authentication // order of antMatchers in important
                 .anyRequest()
                 .authenticated()
                 .and()
                 .formLogin()// browser requests
+                .loginPage("/login").permitAll()
+                .defaultSuccessUrl("/courses", true)
                 .and()
-                .httpBasic();// backend services .... basic auth
+                .rememberMe(); // default to 2 weeks
         return http.build();
     }
 
