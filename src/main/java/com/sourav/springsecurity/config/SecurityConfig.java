@@ -1,30 +1,30 @@
 package com.sourav.springsecurity.config;
 
+import com.sourav.springsecurity.auth.ApplicationUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import java.util.concurrent.TimeUnit;
 
-import static com.sourav.springsecurity.config.ApplicationUserRole.*;
+import static com.sourav.springsecurity.config.ApplicationUserRole.STUDENT;
 
 @Configuration
 public class SecurityConfig {
     @Autowired
     PasswordConfig passwordConfig;
+
+    @Autowired
+    ApplicationUserService applicationUserService;
     @Bean
     protected SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         http
                 .csrf().disable() // else not able to login
+                .authenticationProvider(daoAuthenticationProvider())
                 .authorizeRequests()
                 .antMatchers("/", "index", "/index", "/css/*", "/js/*").permitAll()
                 .antMatchers("/api/**").hasRole(STUDENT.name()) // role based authentication // order of antMatchers in important
@@ -52,37 +52,14 @@ public class SecurityConfig {
         return http.build();
     }
 
+
+
     @Bean
-    protected UserDetailsService userDetailsService() {
-        UserDetails student = User.builder()
-                .username("sourav")
-                //.passwordEncoder(s -> String.valueOf(NoOpPasswordEncoder.getInstance()))
-                .password(passwordConfig.passwordEncoder().encode("123"))
-                //.roles("STUDENT") // ROLE_STUDENT
-                //.roles(STUDENT.name())
-                .authorities(STUDENT.getGrantedAuthority())
-                .build();
-
-        UserDetails admin = User.builder()
-                .username("anna")
-                //.passwordEncoder(s -> String.valueOf(NoOpPasswordEncoder.getInstance()))
-                .password(passwordConfig.passwordEncoder().encode("123"))
-                //.roles("ADMIN") // ROLE_ADMIN
-                .authorities(ADMIN.getGrantedAuthority())
-                .build();
-
-        UserDetails adminTrainee = User.builder()
-                .username("tommy")
-                .password(passwordConfig.passwordEncoder().encode("123"))
-                //.roles(ADMINTRAINEE.name()) // ROLE_ADMIN
-                .authorities(ADMINTRAINEE.getGrantedAuthority())
-                .build();
-        return new InMemoryUserDetailsManager(
-                student,
-                admin,
-                adminTrainee
-        );
+    public DaoAuthenticationProvider daoAuthenticationProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setPasswordEncoder(passwordConfig.passwordEncoder());
+        provider.setUserDetailsService(applicationUserService);
+        return provider;
     }
-
 
 }
