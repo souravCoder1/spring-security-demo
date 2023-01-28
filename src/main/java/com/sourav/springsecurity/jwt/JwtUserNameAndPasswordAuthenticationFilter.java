@@ -1,6 +1,7 @@
 package com.sourav.springsecurity.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sourav.springsecurity.config.CustomAuthenticationManager;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,11 @@ import java.util.Date;
 public class JwtUserNameAndPasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     @Autowired
-    AuthenticationManager authenticationManager;
+    CustomAuthenticationManager authenticationManager;
+
+    public JwtUserNameAndPasswordAuthenticationFilter(CustomAuthenticationManager authenticationManager) {
+        this.authenticationManager = authenticationManager;
+    }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {

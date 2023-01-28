@@ -4,6 +4,9 @@ public class UserNameAndPasswordAuthenticationRequest {
     private String username;
     private String password;
 
+    public UserNameAndPasswordAuthenticationRequest() {
+    }
+
     public UserNameAndPasswordAuthenticationRequest(String username, String password) {
         this.username = username;
         this.password = password;
