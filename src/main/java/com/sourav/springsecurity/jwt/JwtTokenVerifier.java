@@ -50,7 +50,8 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
 
             List<Map<String, String >> authorities = (List<Map<String, String>>) body.get("authorities");
 
-            Set<SimpleGrantedAuthority> simpleGrantedAuthority = authorities.stream().map(m -> new SimpleGrantedAuthority(m.get("authority")))
+            Set<SimpleGrantedAuthority> simpleGrantedAuthority =
+                    authorities.stream().map(m -> new SimpleGrantedAuthority(m.get("authority")))
                     .collect(Collectors.toSet());
 
             Authentication authentication = new UsernamePasswordAuthenticationToken(
@@ -59,8 +60,9 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
                     simpleGrantedAuthority
             );
             SecurityContextHolder.getContext().setAuthentication(authentication);
-        } catch (JwtException) {
+        } catch (JwtException jwtException) {
             throw new IllegalArgumentException(String.format("Token %s can not be trusted", token));
         }
+
     }
 }
