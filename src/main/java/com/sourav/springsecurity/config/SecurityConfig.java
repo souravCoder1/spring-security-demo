@@ -1,6 +1,7 @@
 package com.sourav.springsecurity.config;
 
 import com.sourav.springsecurity.auth.ApplicationUserService;
+import com.sourav.springsecurity.jwt.JwtTokenVerifier;
 import com.sourav.springsecurity.jwt.JwtUserNameAndPasswordAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -39,7 +40,9 @@ public class SecurityConfig {
                 .antMatchers("/api/**").hasRole(STUDENT.name()) // role based authentication // order of antMatchers in important
                 .anyRequest().authenticated()
                 .and()
-                    .addFilter(new JwtUserNameAndPasswordAuthenticationFilter(authenticationManager));
+                    .addFilter(new JwtUserNameAndPasswordAuthenticationFilter(authenticationManager))
+                    .addFilterAfter(new JwtTokenVerifier(), JwtUserNameAndPasswordAuthenticationFilter.class);
+
 
         return http.build();
     }
