@@ -1,6 +1,8 @@
 package com.sourav.springsecurity.config;
 
 import com.sourav.springsecurity.auth.ApplicationUserService;
+import com.sourav.springsecurity.jwt.JwtConfig;
+import com.sourav.springsecurity.jwt.JwtSecretKey;
 import com.sourav.springsecurity.jwt.JwtTokenVerifier;
 import com.sourav.springsecurity.jwt.JwtUserNameAndPasswordAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,10 +29,28 @@ public class SecurityConfig {
     @Autowired
     CustomAuthenticationManager authenticationManager;
 
+    @Autowired
+    JwtConfig jwtConfig;
+
+    @Autowired
+    JwtSecretKey jwtSecretKey;
+
+    public SecurityConfig(PasswordConfig passwordConfig,
+                          ApplicationUserService applicationUserService,
+                          CustomAuthenticationManager authenticationManager,
+                          JwtConfig jwtConfig,
+                          JwtSecretKey jwtSecretKey) {
+        this.passwordConfig = passwordConfig;
+        this.applicationUserService = applicationUserService;
+        this.authenticationManager = authenticationManager;
+        this.jwtConfig = jwtConfig;
+        this.jwtSecretKey = jwtSecretKey;
+    }
+
     @Bean
     protected SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         http
-                .csrf().disable() // else not able to login
+                    .csrf().disable() // else not able to login
                 .sessionManagement()
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
@@ -40,8 +60,8 @@ public class SecurityConfig {
                 .antMatchers("/api/**").hasRole(STUDENT.name()) // role based authentication // order of antMatchers in important
                 .anyRequest().authenticated()
                 .and()
-                    .addFilter(new JwtUserNameAndPasswordAuthenticationFilter(authenticationManager))
-                    .addFilterAfter(new JwtTokenVerifier(), JwtUserNameAndPasswordAuthenticationFilter.class);
+                    .addFilter(new JwtUserNameAndPasswordAuthenticationFilter(authenticationManager, jwtConfig, jwtSecretKey))
+                    .addFilterAfter(new JwtTokenVerifier(jwtConfig, jwtSecretKey), JwtUserNameAndPasswordAuthenticationFilter.class);
 
 
         return http.build();

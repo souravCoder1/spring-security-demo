@@ -24,9 +24,21 @@ public class JwtUserNameAndPasswordAuthenticationFilter extends UsernamePassword
     @Autowired
     CustomAuthenticationManager authenticationManager;
 
-    public JwtUserNameAndPasswordAuthenticationFilter(CustomAuthenticationManager authenticationManager) {
+    @Autowired
+    JwtConfig jwtConfig;
+
+    @Autowired
+    JwtSecretKey jwtSecretKey;
+
+    public JwtUserNameAndPasswordAuthenticationFilter(CustomAuthenticationManager authenticationManager,
+                                                      JwtConfig jwtConfig,
+                                                      JwtSecretKey jwtSecretKey) {
         this.authenticationManager = authenticationManager;
+        this.jwtConfig = jwtConfig;
+        this.jwtSecretKey = jwtSecretKey;
     }
+
+
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
@@ -49,15 +61,15 @@ public class JwtUserNameAndPasswordAuthenticationFilter extends UsernamePassword
                                             HttpServletResponse response,
                                             FilterChain chain,
                                             Authentication authResult) throws IOException, ServletException {
-        String key = ;
+
         String token = Jwts.builder()
                 .setSubject(authResult.getName())
                         .claim("authorities", authResult.getAuthorities())
-                                .setExpiration(new Date())
-                                        .setExpiration(java.sql.Date.valueOf(LocalDate.now().plusWeeks(2)))
-                                                .signWith(Keys.hmacShaKeyFor(key.getBytes()))
+                                .setIssuedAt(new Date())
+                                        .setExpiration(java.sql.Date.valueOf(LocalDate.now().plusDays(jwtConfig.getTokenExpirationAfterDays())))
+                                                .signWith(jwtSecretKey.getSecretKeyForSigning())
                                                         .compact();
-        response.addHeader("Authorization", "Bearer " + token);
+        response.addHeader(jwtSecretKey.getAuthorizationHeader(), jwtConfig.getTokenPrefix() + token);
         chain.doFilter(request, response);
 
     }
