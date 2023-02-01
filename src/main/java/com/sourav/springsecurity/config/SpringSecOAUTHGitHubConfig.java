@@ -28,43 +28,38 @@ public class SpringSecOAUTHGitHubConfig {
                         .oauth2Login();
             } catch (Exception e) {
                 throw new RuntimeException(e);
-            };
+            }
+            ;
         });
         return http.build();
 
     }
-
-//    private ClientRegistration clientRegistration() {
-//        return CommonOAuth2Provider
-//                .GITHUB.getBuilder("github")
-//                .clientId("0f43114c9178bba36981")
-//                .clientSecret("b18b21403cf18f53708ad441b173c508271ad9d1").build();
-//    }
+/*private ClientRegistration clientRegistration() {
+		return CommonOAuth2Provider.GITHUB.getBuilder("github").clientId("42d799aafaa59eee70bf")
+	           .clientSecret("911ac4de96a198377ad2dd94f51707177350683d").build();
+	 }*/
 
 
-    /*private ClientRegistration clientRegistration1() {
-        ClientRegistration cr =
-                ClientRegistration.withRegistrationId("github")
-                        .clientId("3c9be97074f067e78e75")
-                        .clientSecret("ab313f7ade3d79e06c192ca80cf152c43cb5d916")
-                        .scope(new String[]{"read:user"})
-                        .authorizationUri("https://github.com/login/oauth/authorize")
-                        .tokenUri("https://github.com/login/oauth/access_token")
-                        .userInfoUri("https://api.github.com/user")
-                        .userNameAttributeName("id").clientName("OAuth2GITHUB")
-                        .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-                        .redirectUriTemplate("{baseUrl}/{action}/oauth2/code/{registrationId}")
-                        .build();
-        return cr;
-    }*/
+    /*
+     * private ClientRegistration clientRegistration() { ClientRegistration cr =
+     * ClientRegistration.withRegistrationId("github").clientId(
+     * "3c9be97074f067e78e75")
+     * .clientSecret("ab313f7ade3d79e06c192ca80cf152c43cb5d916").scope(new String[]
+     * { "read:user" })
+     * .authorizationUri("https://github.com/login/oauth/authorize")
+     * .tokenUri("https://github.com/login/oauth/access_token").userInfoUri(
+     * "https://api.github.com/user")
+     * .userNameAttributeName("id").clientName("GitHub")
+     * .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+     * .redirectUriTemplate("{baseUrl}/{action}/oauth2/code/{registrationId}").build
+     * (); return cr; }
+     */
 
 
-//    @Bean
-//    public ClientRegistrationRepository clientRepository1() {
-//        ClientRegistration clientReg = clientRegistration();
-//        return new
-//                InMemoryClientRegistrationRepository(clientReg);
-//    }
-
+    /*
+     * @Bean public ClientRegistrationRepository clientRepository() {
+     * ClientRegistration clientReg = clientRegistration(); return new
+     * InMemoryClientRegistrationRepository(clientReg); }
+     */
 
 }
