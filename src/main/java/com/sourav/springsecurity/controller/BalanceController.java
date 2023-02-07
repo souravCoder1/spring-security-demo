@@ -2,14 +2,13 @@ package com.sourav.springsecurity.controller;
 
 import java.util.List;
 
+import com.sourav.springsecurity.model.AccountTransactions;
+import com.sourav.springsecurity.model.Customer;
+import com.sourav.springsecurity.repository.AccountTransactionsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.eazybytes.model.AccountTransactions;
-import com.eazybytes.model.Customer;
-import com.eazybytes.repository.AccountTransactionsRepository;
 
 @RestController
 public class BalanceController {

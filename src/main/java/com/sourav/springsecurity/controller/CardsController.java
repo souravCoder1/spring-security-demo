@@ -2,14 +2,13 @@ package com.sourav.springsecurity.controller;
 
 import java.util.List;
 
+import com.sourav.springsecurity.model.Cards;
+import com.sourav.springsecurity.model.Customer;
+import com.sourav.springsecurity.repository.CardsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.eazybytes.model.Cards;
-import com.eazybytes.model.Customer;
-import com.eazybytes.repository.CardsRepository;
 
 @RestController
 public class CardsController {

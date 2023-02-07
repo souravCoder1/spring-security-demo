@@ -2,10 +2,9 @@ package com.sourav.springsecurity.repository;
 
 import java.util.List;
 
+import com.sourav.springsecurity.model.Loans;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
-
-import com.eazybytes.model.Loans;
 
 @Repository
 public interface LoanRepository extends CrudRepository<Loans, Long> {

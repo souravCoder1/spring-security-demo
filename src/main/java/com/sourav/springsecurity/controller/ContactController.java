@@ -3,13 +3,12 @@ package com.sourav.springsecurity.controller;
 import java.sql.Date;
 import java.util.Random;
 
+import com.sourav.springsecurity.model.Contact;
+import com.sourav.springsecurity.repository.ContactRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.eazybytes.model.Contact;
-import com.eazybytes.repository.ContactRepository;
 
 @RestController
 public class ContactController {
