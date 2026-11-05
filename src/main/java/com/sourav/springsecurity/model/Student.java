@@ -9,11 +9,11 @@ public class Student {
         this.studentName = studentName;
     }
 
-    public String getStudentName() {
-        return studentName;
-    }
-
     public Integer getStudentId() {
         return studentId;
+    }
+
+    public String getStudentName() {
+        return studentName;
     }
 }
